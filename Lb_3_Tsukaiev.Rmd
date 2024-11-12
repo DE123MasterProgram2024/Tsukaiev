@@ -1,0 +1,44 @@
+---
+title: "Lb_3_Tsukaiev"
+output: html_document
+date: "2024-11-12"
+---
+
+# Зміст
+- [Хід роботи](#Хід-роботи)
+- [Висновки](#висновки)
+
+## Хід роботи
+
+```{r}
+# Завантаження бібліотеки
+library(dplyr)
+
+# Генерація тестових даних
+set.seed(400)
+year <- 2000:2005
+sales <- sapply(
+  month.abb, 
+  FUN = function(x) round(runif(n = 6, min = 100, max = 400), 0)
+)
+sales <- as.data.frame(sales, row.names = year)
+sales$year <- year
+
+# Додавання стовпців із середніми продажами за сезонами
+sales_seasonal <- sales %>%
+  rowwise() %>%
+  mutate(
+    winter_avg_sales = mean(c(Jan, Feb, Dec)),
+    spring_avg_sales = mean(c(Mar, Apr, May)),
+    summer_avg_sales = mean(c(Jun, Jul, Aug)),
+    autumn_avg_sales = mean(c(Sep, Oct, Nov))
+  ) %>%
+  select(year, winter_avg_sales, spring_avg_sales, summer_avg_sales, autumn_avg_sales)
+
+# Виведення таблиці з результатами
+print(sales_seasonal)
+
+```
+
+## Висновки
+У цій лабораторній роботі було проведено аналіз сезонних продажів на основі згенерованих тестових даних. За допомогою пакету dplyr було створено нові стовпці, що представляють середній обсяг продажів для кожного сезону (зима, весна, літо, осінь). Це дозволило краще структурувати дані та швидко отримати інформацію про середні значення продажів за кожен сезон, що може бути корисним для аналізу тенденцій у даних.
